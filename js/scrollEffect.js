@@ -6,17 +6,10 @@ $(document).ready(function () {
 
     // default options
     var defaults = {
-      animation : '',
       speed : 0.5,
-      delay: 0
-    }
-    // available animations
-    var validAnims = [
-      'descend',
-      'ascend',
-      'easeRight',
-      'easeLeft'
-    ]
+      delay: 0,
+      parentId: null
+    }    
 
 
     // ScrollEffectObject Class
@@ -27,10 +20,13 @@ $(document).ready(function () {
           opts = $.extend({},defaults,o);
 
       // setup vars
-      var elem = elem,
+      var elem = $(elem),
           wHeight = w.height(),
-          elemTop = elem.offset().top,
-          breakpoint = elemTop - (wHeight*0.4);
+          trigger = $('#'+opts.parentId).offset() ? $('#'+opts.parentId) : elem;
+          triggerTop = trigger.offset().top,
+          breakpoint = triggerTop - (wHeight*0.4);
+
+      console.log(triggerTop);
 
       elem.css({
         '-webkit-transition': 'all '+ opts.speed +'s '+ opts.delay +'s ease',
@@ -44,19 +40,20 @@ $(document).ready(function () {
         if ( scrollTop > breakpoint && !elem.hasClass('animated')) 
         {
             elem.addClass('animated');
-        }
+        }        
       }
+
+      animateOnScroll();
 
       $(window)
       .scroll(animateOnScroll)
       .resize(function(){        
           if ( elem.offset().top !=  elemTop )    {
               elemTop = elem.offset().top;
-              breakpoint = elemTop - (wHeight/2);
+              breakpoint = elemTop - (wHeight/2),
+              wHeight = w.height();
           }
-      });
-
-      animateOnScroll();
+      });      
 
     }
 
@@ -64,13 +61,16 @@ $(document).ready(function () {
     $('[data-animate-entry]').each(function(){
        
       var e = $(this),
-          animation = e.attr('data-animate-entry'),
           speed = e.attr('animate-entry-speed'),
           delay = e.attr('animate-entry-delay') | 0,
-          obj = new ScrollEffectObject(e,{animation,speed,delay});      
+          parentId = e.attr('data-parent'),      
+          obj = new ScrollEffectObject(e,{speed,delay,parentId});    
 
     });
 
+
+
   })();
-  
+
+
 });
