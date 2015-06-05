@@ -38,21 +38,25 @@ $(document).ready(function () {
         'transition': 'all '+ opts.speed +'s '+ opts.delay +'s ease'
       });
 
-      $(window).scroll(function(){     
-
-          var scrollTop = w.scrollTop();
+      function animateOnScroll (argument) {
+        var scrollTop = w.scrollTop();
           
-          if ( scrollTop > breakpoint && !elem.hasClass('animated')) 
-          {
-              elem.addClass('animated');
-          }
-      
-      }).resize(function(){        
+        if ( scrollTop > breakpoint && !elem.hasClass('animated')) 
+        {
+            elem.addClass('animated');
+        }
+      }
+
+      $(window)
+      .scroll(animateOnScroll)
+      .resize(function(){        
           if ( elem.offset().top !=  elemTop )    {
               elemTop = elem.offset().top;
               breakpoint = elemTop - (wHeight/2);
           }
       });
+
+      animateOnScroll();
 
     }
 
